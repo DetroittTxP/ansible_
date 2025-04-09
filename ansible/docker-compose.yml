@@ -1,0 +1,42 @@
+services:
+  ansible:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ansible_container
+    working_dir: /ansible
+    stdin_open: true
+    tty: true
+    environment:
+      ANSIBLE_HOST_KEY_CHECKING: "False"
+    entrypoint: ["/bin/sh"]
+    volumes:
+      - ./inventory:/ansible
+    networks:
+      - awx
+  node1:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: node1
+    stdin_open: true
+    tty: true
+    ports:
+      - 9000:80
+    networks:
+      - awx
+  node2:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: node2
+    stdin_open: true
+    tty: true
+    ports:
+      - 9001:80
+    networks:
+      - awx
+
+networks:
+  awx:
+    external: true
